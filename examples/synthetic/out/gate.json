@@ -1,0 +1,147 @@
+{
+ "tool": "policy-did 0.1.0",
+ "design": "examples/synthetic/design.yaml",
+ "design_sha": "67b4274aa9de6860",
+ "data": "examples/synthetic/panel.csv",
+ "data_sha": "263223deeee599e3",
+ "checked_at": "2026-10-20T21:05:26",
+ "method": "cs",
+ "status": "PASS",
+ "items": [
+  {
+   "id": "G1",
+   "severity": "PASS",
+   "title": "가설 방향 사전 등록",
+   "detail": "가설 1건, 방향 전부 등록, 등록일 2026-10-20",
+   "say": ""
+  },
+  {
+   "id": "G2",
+   "severity": "PASS",
+   "title": "결과변수 존재·결측",
+   "detail": "'y' 결측 0/900",
+   "say": ""
+  },
+  {
+   "id": "G2c",
+   "severity": "PASS",
+   "title": "패널 균형",
+   "detail": "단위 60 × 시점 15 (2010~2024)",
+   "say": ""
+  },
+  {
+   "id": "G2e",
+   "severity": "INFO",
+   "title": "시점표에 없는 단위",
+   "detail": "24개 단위를 미처치로 간주: U37, U38, U39, U40, U41, U42, U43, U44…",
+   "say": ""
+  },
+  {
+   "id": "G3",
+   "severity": "PASS",
+   "title": "처치 구조",
+   "detail": "코호트 3개(2015, 2018, 2021), 미처치 24개 단위, 비교군=not_yet_treated, staggered",
+   "say": ""
+  },
+  {
+   "id": "G4",
+   "severity": "PASS",
+   "title": "클러스터 수",
+   "detail": "60개",
+   "say": ""
+  },
+  {
+   "id": "G5",
+   "severity": "PASS",
+   "title": "사전 추세 기울기 검정",
+   "detail": "코호트 2015: 기울기 차 0.02873, t=0.48, p=0.629 (12 vs 48 단위); 코호트 2018: 기울기 차 -0.05018, t=-1.65, p=0.099 (12 vs 36 단위); 코호트 2021: 기울기 차 0.01844, t=1.12, p=0.261 (12 vs 24 단위) / 코호트 합산(역분산 가중) 차 0.004418, z=0.32, p=0.753",
+   "say": "사전 추세 검정 통과는 평행추세 가정의 증명이 아니다(검정력 한계, Roth 2022)"
+  },
+  {
+   "id": "G5b",
+   "severity": "INFO",
+   "title": "사전 기간 원평균 차(rel=-1 기준)",
+   "detail": "e=-4: -0.3115; e=-3: 0.003142; e=-2: -0.07805",
+   "say": ""
+  },
+  {
+   "id": "G6",
+   "severity": "PASS",
+   "title": "SUTVA",
+   "detail": "spillover_risk=low: 합성 자료 — 단위 간 상호작용 없이 생성",
+   "say": ""
+  },
+  {
+   "id": "G7",
+   "severity": "INFO",
+   "title": "기대 효과(anticipation)",
+   "detail": "0기 — 발표~시행 간격",
+   "say": ""
+  },
+  {
+   "id": "G8",
+   "severity": "PASS",
+   "title": "추정기",
+   "detail": "cs: r:did, py:differences 사용 가능",
+   "say": ""
+  }
+ ],
+ "raw_event_means": [
+  {
+   "rel": -4,
+   "diff": -0.31151166666666325,
+   "n_treated": 36,
+   "cohorts": 3
+  },
+  {
+   "rel": -3,
+   "diff": 0.0031422222222090568,
+   "n_treated": 36,
+   "cohorts": 3
+  },
+  {
+   "rel": -2,
+   "diff": -0.07805101851854108,
+   "n_treated": 36,
+   "cohorts": 3
+  },
+  {
+   "rel": -1,
+   "diff": 0.0,
+   "n_treated": 36,
+   "cohorts": 3
+  },
+  {
+   "rel": 0,
+   "diff": 2.138123611111091,
+   "n_treated": 36,
+   "cohorts": 3
+  },
+  {
+   "rel": 1,
+   "diff": 2.6562814814814764,
+   "n_treated": 36,
+   "cohorts": 3
+  },
+  {
+   "rel": 2,
+   "diff": 3.196259722222218,
+   "n_treated": 36,
+   "cohorts": 3
+  },
+  {
+   "rel": 3,
+   "diff": 3.5457979166666505,
+   "n_treated": 36,
+   "cohorts": 3
+  },
+  {
+   "rel": 4,
+   "diff": 4.307656597222216,
+   "n_treated": 24,
+   "cohorts": 2
+  }
+ ],
+ "n_rows": 900,
+ "n_units": 60
+}

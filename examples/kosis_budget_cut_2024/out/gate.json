@@ -1,0 +1,123 @@
+{
+ "tool": "policy-did 0.1.0",
+ "design": "examples/kosis_budget_cut_2024/design.yaml",
+ "design_sha": "81d6306123cd49aa",
+ "data": "examples/kosis_budget_cut_2024/panel.csv",
+ "data_sha": "40f1a1b89db53ef3",
+ "checked_at": "2026-10-20T21:08:06",
+ "method": "cs",
+ "status": "FAIL",
+ "items": [
+  {
+   "id": "G1",
+   "severity": "PASS",
+   "title": "가설 방향 사전 등록",
+   "detail": "가설 1건, 방향 전부 등록, 등록일 2026-10-20",
+   "say": ""
+  },
+  {
+   "id": "G2",
+   "severity": "PASS",
+   "title": "결과변수 존재·결측",
+   "detail": "'exec_100m_krw' 결측 0/228 (log 변환)",
+   "say": ""
+  },
+  {
+   "id": "G2c",
+   "severity": "PASS",
+   "title": "패널 균형",
+   "detail": "단위 19 × 시점 12 (2013~2024)",
+   "say": ""
+  },
+  {
+   "id": "G2f",
+   "severity": "INFO",
+   "title": "제외 단위(exclude_units)",
+   "detail": "개인정보보호위원회, 경찰청, 고용노동부, 공정거래위원회, 관세청, 기획재정부, 법무부, 법제처, 새만금개발청, 소방청, 여성가족부, 외교부, 우주항공청, 인사혁신처, 조달청, 질병관리청, 통일부, 특허청, 해양경찰청, 행정안전부, 행정중심복합도시건설청",
+   "say": "exclude_units 사유로 제외한 단위: 개인정보보호위원회, 경찰청, 고용노동부, 공정거래위원회, 관세청, 기획재정부, 법무부, 법제처, 새만금개발청, 소방청, 여성가족부, 외교부, 우주항공청, 인사혁신처, 조달청, 질병관리청, 통일부, 특허청, 해양경찰청, 행정안전부, 행정중심복합도시건설청"
+  },
+  {
+   "id": "G2g",
+   "severity": "WARN",
+   "title": "시계열 단절 각주",
+   "detail": "시계열 단절 2024: R&D 예산 기준 변경 — 약 1.8조원이 R&D→非R&D로 재분류되어 2023↔2024 증감률 단순 비교 주의(KISTEP 2026년도 정부연구개발예산 현황분석)",
+   "say": "자료 출처의 단절 각주: 시계열 단절 2024: R&D 예산 기준 변경 — 약 1.8조원이 R&D→非R&D로 재분류되어 2023↔2024 증감률 단순 비교 주의(KISTEP 2026년도 정부연구개발예산 현황분석)"
+  },
+  {
+   "id": "G3",
+   "severity": "FAIL",
+   "title": "비교군",
+   "detail": "미처치 단위가 없는데 comparison=never_treated",
+   "say": "미처치 비교군이 없다 — not_yet_treated 로 바꾸거나 설계를 재고"
+  },
+  {
+   "id": "G4",
+   "severity": "WARN",
+   "title": "클러스터 수",
+   "detail": "19개 (기준 20)",
+   "say": "클러스터 19개로 기준(20)에 못 미침 — 신뢰구간이 과소 추정될 수 있어 유의성 언어를 쓰지 않는다"
+  },
+  {
+   "id": "G5",
+   "severity": "WARN",
+   "title": "사전 추세 기울기 검정",
+   "detail": "비교할 단위가 모자람(코호트·비교군 각 2단위 이상 필요)",
+   "say": "사전 추세 차이를 검정할 수 없었다"
+  },
+  {
+   "id": "G6",
+   "severity": "WARN",
+   "title": "SUTVA",
+   "detail": "spillover_risk=high: 부처 간 사업 이관·다부처 사업 재분류로 집행액이 부처 사이를 이동한다",
+   "say": "파급 위험을 높음으로 등록함 — 추정치는 직접효과와 파급의 합이며 순효과로 해석하지 않는다(부처 간 사업 이관·다부처 사업 재분류로 집행액이 부처 사이를 이동한다)"
+  },
+  {
+   "id": "G7",
+   "severity": "INFO",
+   "title": "기대 효과(anticipation)",
+   "detail": "0기",
+   "say": ""
+  },
+  {
+   "id": "G8",
+   "severity": "PASS",
+   "title": "추정기",
+   "detail": "cs: r:did, py:differences 사용 가능",
+   "say": ""
+  }
+ ],
+ "raw_event_means": [
+  {
+   "rel": -4,
+   "diff": null,
+   "n_treated": 0,
+   "cohorts": 0
+  },
+  {
+   "rel": -3,
+   "diff": null,
+   "n_treated": 0,
+   "cohorts": 0
+  },
+  {
+   "rel": -2,
+   "diff": null,
+   "n_treated": 0,
+   "cohorts": 0
+  },
+  {
+   "rel": -1,
+   "diff": null,
+   "n_treated": 0,
+   "cohorts": 0
+  },
+  {
+   "rel": 0,
+   "diff": null,
+   "n_treated": 0,
+   "cohorts": 0
+  }
+ ],
+ "n_rows": 228,
+ "n_units": 19
+}

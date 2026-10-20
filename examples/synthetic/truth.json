@@ -1,0 +1,12 @@
+{
+ "effect_level": 2.0,
+ "effect_slope_per_year": 0.5,
+ "cohorts": [
+  2015,
+  2018,
+  2021
+ ],
+ "n_never": 24,
+ "trend_break": false,
+ "seed": 7
+}

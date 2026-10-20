@@ -1,0 +1,86 @@
+# policy-did 설계서 — 코드보다 먼저 쓴다. 여기 적지 않은 가설·결과변수는 보고서에 나오지 않는다.
+name: 합성_staggered_예시
+question: "합성 자료: 처치가 y를 effect만큼 올리는가(참값 2.0 + 0.5/년)"
+registered_at: 2026-10-20          # 사전 등록일. 자료를 보기 전에 적는다
+
+data:
+  file: panel.csv               # 단위×시점 긴 형식. --data 로 덮어쓸 수 있다
+  unit: unit                    # 처치 단위 열(부처·지역·기관·사업)
+  time: year                    # 시점 열(정수)
+  outcome: y                    # 결과 변수 열 — 자료에 실제로 있어야 한다
+  outcome_source: "출처(표 ID·조회일)를 적는다"
+  log_outcome: false            # true면 log(y) 를 쓴다(0·음수 있으면 게이트가 막는다)
+  cluster: unit                 # 표준오차 클러스터(기본 단위)
+  covariates: []                # 시간불변 공변량만 CS에서 허용
+
+treatment:
+  name: "제도 X"
+  timing:
+    U01: 2015
+    U02: 2018
+    U03: 2021
+    U04: 2015
+    U05: 2018
+    U06: 2021
+    U07: 2015
+    U08: 2018
+    U09: 2021
+    U10: 2015
+    U11: 2018
+    U12: 2021
+    U13: 2015
+    U14: 2018
+    U15: 2021
+    U16: 2015
+    U17: 2018
+    U18: 2021
+    U19: 2015
+    U20: 2018
+    U21: 2021
+    U22: 2015
+    U23: 2018
+    U24: 2021
+    U25: 2015
+    U26: 2018
+    U27: 2021
+    U28: 2015
+    U29: 2018
+    U30: 2021
+    U31: 2015
+    U32: 2018
+    U33: 2021
+    U34: 2015
+    U35: 2018
+    U36: 2021
+  always_treated: []            # 표본 시작 전부터 처치된 단위 — 비교에서 뺀다
+  exclude_units: []             # 그 밖에 빼는 단위(사유를 notes에)
+  comparison: not_yet_treated   # never_treated | not_yet_treated
+  anticipation: 0               # 처치 전 몇 기부터 반응이 시작될 수 있는가
+
+hypotheses:                     # 사전 등록 가설 — 방향을 반드시 적는다
+  - id: H1
+    outcome: y
+    direction: positive         # positive | negative | zero
+    horizon: [0, 3]             # 처치 후 몇 기까지 말할 것인가
+    statement: "처치 후 0~3기에 y가 증가한다(참값 양)"
+
+assumptions:
+  parallel_trends:
+    pre_periods_min: 3          # 코호트마다 최소 사전 기간
+    note: "왜 평행추세를 믿는가"
+  sutva:
+    spillover_risk: low         # low | medium | high
+    justification: "합성 자료 — 단위 간 상호작용 없이 생성"
+  no_other_policy: "합성 자료 — 다른 정책 없음"
+  anticipation_note: "발표~시행 간격"
+
+design:
+  method: cs                    # cs | sa | twfe | synthdid | rdd
+  min_clusters: 20              # 이보다 적으면 경고(추론 신뢰도)
+  event_window: [-4, 4]
+  # rdd:
+  #   running: score
+  #   cutoff: 60
+  #   bandwidth: null           # null이면 rdrobust 자동 선택
+
+notes: ""
