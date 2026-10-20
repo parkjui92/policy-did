@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" font-family="sans-serif" font-size="12">
+<rect width="720" height="360" fill="white"/>
+<text x="60" y="22" font-size="13" fill="#222">강소특구_지정_시도별_정부RnD집행: 사건연구 (r:did)</text>
+<line x1="60" y1="183.3" x2="700" y2="183.3" stroke="#888" stroke-dasharray="4 3"/>
+<line x1="380.0" y1="40" x2="380.0" y2="310" stroke="#c44" stroke-dasharray="2 3"/>
+<line x1="60" y1="310" x2="700" y2="310" stroke="#333"/>
+<line x1="60" y1="40" x2="60" y2="310" stroke="#333"/>
+<text x="28.0" y="326" text-anchor="middle">-6</text>
+<text x="92.0" y="326" text-anchor="middle">-5</text>
+<text x="156.0" y="326" text-anchor="middle">-4</text>
+<text x="220.0" y="326" text-anchor="middle">-3</text>
+<text x="284.0" y="326" text-anchor="middle">-2</text>
+<text x="348.0" y="326" text-anchor="middle">-1</text>
+<text x="412.0" y="326" text-anchor="middle">0</text>
+<text x="476.0" y="326" text-anchor="middle">1</text>
+<text x="540.0" y="326" text-anchor="middle">2</text>
+<text x="604.0" y="326" text-anchor="middle">3</text>
+<text x="668.0" y="326" text-anchor="middle">4</text>
+<text x="732.0" y="326" text-anchor="middle">5</text>
+<text x="54" y="314.0" text-anchor="end">-0.207</text>
+<text x="54" y="260.0" text-anchor="end">-0.119</text>
+<text x="54" y="206.0" text-anchor="end">-0.0306</text>
+<text x="54" y="152.0" text-anchor="end">0.0577</text>
+<text x="54" y="98.0" text-anchor="end">0.146</text>
+<text x="54" y="44.0" text-anchor="end">0.234</text>
+<line x1="92.0" y1="272.1" x2="92.0" y2="62.5" stroke="#1f4e79" stroke-width="1.5"/>
+<circle cx="92.0" cy="167.3" r="4" fill="#777"/>
+<line x1="156.0" y1="262.1" x2="156.0" y2="120.6" stroke="#1f4e79" stroke-width="1.5"/>
+<line x1="92.0" y1="167.3" x2="156.0" y2="191.3" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="156.0" cy="191.3" r="4" fill="#777"/>
+<line x1="220.0" y1="287.5" x2="220.0" y2="150.2" stroke="#1f4e79" stroke-width="1.5"/>
+<line x1="156.0" y1="191.3" x2="220.0" y2="218.9" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="220.0" cy="218.9" r="4" fill="#777"/>
+<line x1="284.0" y1="225.7" x2="284.0" y2="159.9" stroke="#1f4e79" stroke-width="1.5"/>
+<line x1="220.0" y1="218.9" x2="284.0" y2="192.8" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="284.0" cy="192.8" r="4" fill="#777"/>
+<line x1="284.0" y1="192.8" x2="348.0" y2="183.3" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="348.0" cy="183.3" r="4" fill="#777"/>
+<line x1="412.0" y1="213.3" x2="412.0" y2="161.3" stroke="#1f4e79" stroke-width="1.5"/>
+<line x1="348.0" y1="183.3" x2="412.0" y2="187.3" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="412.0" cy="187.3" r="4" fill="#1f4e79"/>
+<line x1="476.0" y1="207.0" x2="476.0" y2="130.2" stroke="#1f4e79" stroke-width="1.5"/>
+<line x1="412.0" y1="187.3" x2="476.0" y2="168.6" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="476.0" cy="168.6" r="4" fill="#1f4e79"/>
+<line x1="540.0" y1="198.3" x2="540.0" y2="138.1" stroke="#1f4e79" stroke-width="1.5"/>
+<line x1="476.0" y1="168.6" x2="540.0" y2="168.2" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="540.0" cy="168.2" r="4" fill="#1f4e79"/>
+<line x1="604.0" y1="207.7" x2="604.0" y2="94.1" stroke="#1f4e79" stroke-width="1.5"/>
+<line x1="540.0" y1="168.2" x2="604.0" y2="150.9" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="604.0" cy="150.9" r="4" fill="#1f4e79"/>
+<line x1="668.0" y1="202.5" x2="668.0" y2="92.4" stroke="#1f4e79" stroke-width="1.5"/>
+<line x1="604.0" y1="150.9" x2="668.0" y2="147.5" stroke="#1f4e79" stroke-opacity="0.4"/>
+<circle cx="668.0" cy="147.5" r="4" fill="#1f4e79"/>
+<text x="380" y="352" text-anchor="middle">처치 시점 대비 상대 기간 (0 = 처치 첫 해, 기준 −1)</text>
+</svg>

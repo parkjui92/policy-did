@@ -1,0 +1,54 @@
+# 강소연구개발특구 지정이 시도별 정부 R&D 집행액을 바꿨는가 — 공개 집계 자료 시범
+# 처치 시점 근거: sources.md (특구재단 「강소특구란?」 원문, 조회 2026-10-20)
+name: 강소특구_지정_시도별_정부RnD집행
+question: "강소연구개발특구를 처음 지정받은 시도의 정부 R&D 집행액(log)이, 아직 지정받지 않은 시도와 비교해 지정 후 0~3년에 달라졌는가"
+registered_at: 2026-10-20
+
+data:
+  file: panel.csv
+  unit: unit
+  time: year
+  outcome: exec_100m_krw
+  outcome_source: "KOSIS DT_127003_009 지역별 국가연구개발사업 집행 추이(억원, 집행연도 기준), kr-sti-data export 2026-10-20"
+  log_outcome: true
+  cluster: unit
+
+treatment:
+  name: "강소연구개발특구 지정(시도 안 첫 지정 연도)"
+  timing:                  # 특구재단 원문: '19 안산·김해·진주·창원·포항·청주 / '20 구미·군산·나주·울주·홍릉·천안아산 / '22 인천 서구
+    경기도: 2019
+    경상남도: 2019
+    경상북도: 2019
+    충청북도: 2019
+    서울특별시: 2020
+    울산광역시: 2020
+    전라남도: 2020
+    전북특별자치도: 2020
+    충청남도: 2020
+    인천광역시: 2022
+  always_treated: []
+  exclude_units: [강원특별자치도]   # 2022 춘천 지정 보도는 있으나 특구재단 현행 목록에 없음 — 처치 여부 미확정(sources.md)
+  comparison: not_yet_treated
+  anticipation: 0
+
+hypotheses:
+  - id: H1
+    outcome: exec_100m_krw
+    direction: positive
+    horizon: [0, 3]
+    statement: "지정 후 0~3년 시도 정부 R&D 집행액(log)이 증가한다. 단 강소특구 국비는 특구당 연 수십억 원 규모라 시도 집행액(수천~수만억 원) 대비 효과가 작아 검출되지 않을 가능성이 크다"
+
+assumptions:
+  parallel_trends:
+    pre_periods_min: 3
+    note: "2011~2018 사전 기간 8년. 시도 R&D 집행은 대형 출연연·대학 소재지에 좌우되며 단위 고정효과로 흡수된다고 가정"
+  sutva:
+    spillover_risk: medium
+    justification: "강소특구는 시·군 단위이고 시도 집행액은 그 시도 전체 합이라 특구 밖으로의 파급이 같은 시도 안에 머물면 단위 안에 흡수된다. 시도 간 사업 이동(기관 이전·다부처 사업)은 배제할 수 없다"
+  no_other_policy: "부산 광역특구 2012·전북 광역특구 2015 지정이 비교군 안에 있다. 2024년 R&D 예산 기준 변경(약 1.8조원 재분류)이 전 시도에 공통으로 걸린다(시점 고정효과로 흡수되나 지역별 비중이 다를 수 있음)"
+  anticipation_note: "1차 공모 2018.12~2019.3, 지정 2019.6 — 집행연도 기준이라 당해 연도 효과는 반년치"
+
+design:
+  method: cs
+  min_clusters: 20
+  event_window: [-5, 4]
