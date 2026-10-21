@@ -4,9 +4,49 @@
 
 ## 왜 만들었나
 
-사업 평가나 정책연구 보고서에 "이 제도 도입으로 성과가 n% 늘었다"는 문장이 들어갑니다. 그 숫자는 대개 이중차분(DiD)이나 합성통제 같은 인과추론 방법으로 나오는데, 실무에서 문제는 계산이 아니라 그 앞에서 생깁니다. 정책을 받은 시점이 기관마다 다른데 옛날식 회귀를 돌리고, 비교할 상대가 없는데 "효과"를 쓰고, 숫자를 본 뒤에 가설을 고치고, 결과 변수가 자료에 없다는 것을 보고서를 쓰다가 알아차립니다. 추정 코드는 어디에나 있지만, "이 설계로 그 숫자를 말해도 되는가"를 먼저 묻고 안 되면 멈추는 도구는 없었습니다(2026-10 GitHub 검색: 정책평가 DiD 저장소는 전부 과제물 수준).
+사업 평가나 정책연구 보고서에 "이 제도 도입으로 성과가 n% 늘었다"는 문장이 들어갑니다. 그 숫자는 대개 이중차분(DiD)이나 합성통제 같은 인과추론 방법으로 나오는데, 실무에서 문제는 계산이 아니라 그 앞에서 생깁니다. 정책을 받은 시점이 기관마다 다른데 옛날식 회귀를 돌리고, 비교할 상대가 없는데 "효과"를 쓰고, 숫자를 본 뒤에 가설을 고치고, 결과 변수가 자료에 없다는 것을 보고서를 쓰다가 알아차립니다. 이 도구는 기존 추정 패키지 앞에 설계 점검과 해석 규칙을 두어, 분석 전에 확인할 사항을 빠뜨리지 않도록 돕습니다.
 
-policy-did는 그 순서를 코드로 묶습니다. **설계서를 먼저 쓰고, 식별 가정 게이트를 통과한 설계에만 추정이 돌고, 보고서에는 "말할 수 없는 것"이 먼저 찍힙니다.** 임상시험의 사전 등록·대조군 심사와 같은 규율을 정책 자료에 적용한 것입니다.
+policy-did는 그 순서를 코드로 묶습니다. **설계서를 먼저 쓰고, 식별 가정 게이트를 통과한 설계에만 추정이 돌고, 보고서에는 "말할 수 없는 것"도 별도 절로 기록됩니다.** 임상시험의 사전 등록·대조군 심사와 같은 규율을 정책 자료에 적용한 것입니다.
+
+## 언제 쓰면 좋은가 · 강점
+
+- **정책 도입 전후 자료가 있을 때**: 처치 단위·시점·비교군을 정리하고 분석 가능한 설계인지 먼저 점검합니다.
+- **기관마다 도입 연도가 다를 때**: staggered DiD에 맞는 방법을 선택하고 부적합한 TWFE 조합을 차단합니다.
+- **추정 결과를 보고서로 옮길 때**: 사전 가설, 경고, 자료·설계서 해시를 결과와 함께 보존합니다.
+
+강점은 새로운 추정식을 만드는 데 있지 않고, **설계 → 점검 → 추정 → 해석의 연결을 재현할 수 있게 한다**는 데 있습니다. PASS는 인과관계 인증이 아닙니다. 비교군이 없거나 공변량 조정·민감도 분석이 핵심인 연구는 현재 지원 범위와 먼저 대조하세요.
+
+## 첫 실행: 합성 자료로 연습하기
+
+Python 3.10 이상을 권장합니다. 점검 코드는 표준 라이브러리만 사용하고, 추정에는 선택한 R/Python 패키지가 필요합니다.
+
+```bash
+git clone https://github.com/parkjui92/policy-did.git
+cd policy-did
+python3 policy_did.py simulate --out out/practice
+python3 policy_did.py engines
+python3 policy_did.py check out/practice/design.yaml --data out/practice/panel.csv --out out/practice/results
+```
+
+`simulate`는 `design.yaml`, `panel.csv`, `truth.json`을 만듭니다. `check` 뒤에는 `gate.json`과 가능한 경우 사전 추세 그림이 생깁니다. 추정기가 없으면 G8이 FAIL로 나오는 것이 정상입니다. `engines`가 안내하는 패키지 중 설계의 `method`에 맞는 것을 설치한 뒤 **check를 다시** 실행하세요.
+
+```bash
+python3 policy_did.py estimate out/practice/design.yaml --data out/practice/panel.csv --out out/practice/results
+python3 policy_did.py report out/practice/design.yaml --data out/practice/panel.csv --out out/practice/results
+```
+
+마지막으로 `report.md`에서 가설별 해석과 경고를 읽습니다. 설치 없이 기존 결과 형식을 보고 싶다면 [합성 예시 보고서](examples/synthetic/out/report.md)를 먼저 열어 보세요.
+
+| 상황 | 동작·대응 |
+|---|---|
+| `check`가 FAIL | 점검 결과를 남기고 종료 코드 1. 원인을 해결한 뒤 다시 점검 |
+| FAIL 상태에서 `estimate` 또는 `run` | 종료 코드 3으로 추정 차단 |
+| WARN | 추정 가능하지만 경고를 보고서에 유지 |
+| 설계·자료 변경 | 기존 해시와 달라지므로 `check`부터 재실행 |
+| 잘못된 연도·빈 단위 ID | 행을 조용히 버리지 않고 입력 오류로 중단 |
+| KOSIS 변환 후 중복 단위×연도 | `panel`의 `--filter`로 하나의 분류만 선택. 서로 다른 금액 단위도 먼저 통일 |
+
+분석마다 출력 폴더를 나누면 과거 결과와 새 결과가 섞이는 것을 피할 수 있습니다. `registered_at`은 사용자가 적는 값이므로 제3자 사전등록의 증거를 대신하지 않습니다.
 
 ## 어떻게 쓰나
 
@@ -148,7 +188,7 @@ FAIL이면 `estimate`가 종료 코드 3으로 멈추고 추정 파일을 만들
 - 연속 처치(처치 강도 차이)·삼중차분·HonestDiD 민감도 분석은 범위 밖
 - 공변량은 설계서에 자리만 있고 추정에 아직 넘기지 않는다
 - 사전 추세 검정은 단위별 선형 기울기 비교의 간이판. 정식 검정은 R `pretrends`·`HonestDiD`
-- RDD 밀도 점검은 `rddensity`의 대용
+- RDD 밀도 점검은 간이 진단이며 `rddensity`의 정식 검정을 대체하지 않음
 - 내장 YAML 파서는 설계서 서식의 부분집합만 읽는다(PyYAML이 있으면 그것을 쓴다)
 
 ## 정직성 규칙 (출력에 그대로 찍힙니다)
@@ -167,9 +207,23 @@ FAIL이면 `estimate`가 종료 코드 3으로 멈추고 추정 파일을 만들
 - 합성 staggered 패널(60단위·15년·코호트 3): `r:did`·`py:differences` 동일값, e=0 2.05(참값 2.0) … e=4 4.07(참값 4.0), 사전 기간 −0.12~−0.01
 - `sa` 4.30 vs `cs` 4.29(같은 자료). 단일 코호트: `twfe` 3.52·`synthdid` 3.54(참값 평균 3.5). RDD: `rdrobust` 3.25(SE 1.06, 참값 5, 강건 CI가 참값 포함)
 - 게이트 거부 경로 5종(staggered+TWFE, 비교군 없음, SUTVA 근거 없음, 시점표에만 있는 단위, 설계 변경 후 추정) 차단 확인
-- 실제 자료 1건 완주(`examples/innotown_region/`), tests 18건(`python3 policy_did.py selftest`)
+- 최초 공개 시 실제 자료 1건 완주(`examples/innotown_region/`), tests 18건(`python3 policy_did.py selftest`)
 
 설계 결정과 근거는 [docs/design.md](docs/design.md).
+
+## R&D 정책평가 도구 묶음에서의 위치
+
+필요한 단계만 골라 사용할 수 있습니다. 아래 순서는 업무 흐름이며 자동으로 연결된 파이프라인은 아닙니다. 도구 사이에 자료를 옮길 때 식별자·단위·연도·분류를 확인하세요.
+
+| 필요 | 도구 |
+|---|---|
+| 공식 통계 수집 | [kr-sti-data](https://github.com/parkjui92/kr-sti-data) |
+| 과제번호로 논문 추적 | [kr-grant-trace](https://github.com/parkjui92/kr-grant-trace) |
+| 기술 분야의 논문·국내 특허 동향 | [sci-concentration](https://github.com/parkjui92/sci-concentration) |
+| 논리모형·성과지표 설계 점검 | [rnd-program-logic](https://github.com/parkjui92/rnd-program-logic) |
+| 인과효과 추정 전 설계 점검 | [policy-did](https://github.com/parkjui92/policy-did) |
+| AI와 평가 문서 검토 | [rnd-eval-skills](https://github.com/parkjui92/rnd-eval-skills) |
+| 예산표 금액 대조 | [won-diff](https://github.com/parkjui92/won-diff) |
 
 ## 라이선스
 

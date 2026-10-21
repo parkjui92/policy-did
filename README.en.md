@@ -4,9 +4,25 @@
 
 ## Why
 
-Program evaluations and policy reports routinely claim "the program raised outcome Y by n%". The number usually comes from difference-in-differences (DiD) or synthetic control, and in practice the trouble is not the computation but what happens before it: two-way fixed effects run on staggered adoption, "effects" reported with no comparison group, hypotheses rewritten after seeing the numbers, outcome variables that turn out not to exist in the data. Estimation code is everywhere; a tool that first asks whether this design may produce that number, and stops when it may not, was missing (GitHub, 2026-10: policy-evaluation DiD repositories are all coursework-level).
+Program evaluations and policy reports routinely claim "the program raised outcome Y by n%". The number usually comes from difference-in-differences (DiD) or synthetic control, and in practice the trouble is not the computation but what happens before it: two-way fixed effects run on staggered adoption, "effects" reported with no comparison group, hypotheses rewritten after seeing the numbers, outcome variables that turn out not to exist in the data. This tool adds design checks and reporting rules around existing estimators so that important questions are addressed before estimation.
 
-policy-did wires that order into code. **A design file comes first, estimation runs only on designs that pass an identification gate, and the report prints "what we cannot say" before anything else.** It is the pre-registration and control-group review of a clinical trial, applied to policy data.
+policy-did wires that order into code. **A design file comes first, estimation runs only on designs that pass an identification gate, and the report includes a dedicated "what we cannot say" section.** It is the pre-registration and control-group review of a clinical trial, applied to policy data.
+
+## Start with a complete example
+
+Use Python 3.10 or newer. No API key is required. The gate uses the standard library; estimation requires the R/Python package for the selected method.
+
+```bash
+git clone https://github.com/parkjui92/policy-did.git
+cd policy-did
+python3 policy_did.py simulate --out out/practice
+python3 policy_did.py engines
+python3 policy_did.py check out/practice/design.yaml --data out/practice/panel.csv --out out/practice/results
+```
+
+Missing estimators cause G8 to FAIL. Install an applicable engine using the printed instructions, rerun `check`, then use `estimate` and `report` with the same paths. Expect `gate.json`, `estimate.json`, and `report.md`. See the [saved example report](examples/synthetic/out/report.md) before installing an engine.
+
+Use this for policy panels with credible comparison units, staggered adoption, and an auditable design-to-report workflow. PASS is not proof of identification; a user-entered registration date is not independent preregistration evidence. `check` exits 1 on FAIL; attempting estimation from a failed gate exits 3. Invalid time values and empty unit IDs stop input processing. Nonfinite outcomes count as missing. KOSIS panel conversion rejects duplicate unit-period rows and mixed units before writing output. Covariates remain unsupported in estimation; see the limitations below.
 
 ## How
 

@@ -36,7 +36,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 METHODS = {
     "cs": "Callaway–Sant'Anna (R did::att_gt / Python differences)",
@@ -386,11 +386,15 @@ class Panel:
 
 def read_csv_with_notes(path: Path) -> tuple[list[dict], list[str], list[str]]:
     notes, body = [], []
+    in_preamble = True
     with open(path, encoding="utf-8-sig", newline="") as f:
         for line in f:
-            if line.startswith("#"):
+            if in_preamble and line.startswith("#"):
                 notes.append(line.lstrip("#").strip())
             else:
+                if not line.strip() and in_preamble:
+                    continue
+                in_preamble = False
                 body.append(line)
     reader = csv.DictReader(body)
     rows = [dict(r) for r in reader]
@@ -404,7 +408,8 @@ def _num(v):
     if s in ("", "-", "NA", "na", "NaN", "nan", "null", "None", "…", "X", "x"):
         return None
     try:
-        return float(s)
+        value = float(s)
+        return value if math.isfinite(value) else None
     except ValueError:
         return None
 
@@ -419,8 +424,10 @@ def build_panel(d: Design, data_path: Path) -> Panel:
     excl = {str(x) for x in (d.treatment.get("exclude_units") or [])}
     log_y = bool(d.data.get("log_outcome"))
     out, dropped = [], defaultdict(list)
-    for r in rows:
-        u = str(r[d.unit_col]).strip()
+    for row_number, r in enumerate(rows, 2):
+        u = str(r[d.unit_col] or "").strip()
+        if not u:
+            raise SystemExit(f"자료 {row_number}행: 단위 식별자가 비어 있습니다")
         if u in always:
             dropped["always_treated"].append(u)
             continue
@@ -428,8 +435,8 @@ def build_panel(d: Design, data_path: Path) -> Panel:
             dropped["exclude_units"].append(u)
             continue
         t = _num(r[d.time_col])
-        if t is None:
-            continue
+        if t is None or not t.is_integer():
+            raise SystemExit(f"자료 {row_number}행: 시점은 유한한 정수여야 합니다 ({r[d.time_col]!r})")
         t = int(t)
         y = _num(r[d.outcome_col])
         if y is not None and log_y:
@@ -1270,12 +1277,35 @@ def cmd_panel(args):
     # 더 세분된 분류(c2…)가 있으면 합계 행만 남기도록 --filter 로 지정
     filt = {}
     for f in args.filter or []:
+        if "=" not in f:
+            raise SystemExit("--filter 는 열=값 형식이어야 합니다")
         k, v = f.split("=", 1)
+        if k not in cols:
+            raise SystemExit(f"필터 열이 없습니다: {k}")
         filt[k] = v
     sel = [r for r in sel if all(r.get(k) == v for k, v in filt.items())]
     if args.drop:
         sel = [r for r in sel if r.get(unit_col) not in set(args.drop)]
+    if not sel:
+        raise SystemExit("필터·제외 조건 뒤에 남는 행이 없습니다")
+    for col in (unit_col, "prd_de", "dt"):
+        if col not in cols:
+            raise SystemExit(f"자료에 열 '{col}' 이 없습니다")
+    if len({r.get("unit") for r in sel}) > 1:
+        raise SystemExit("서로 다른 금액 단위가 섞여 있습니다 — 단위를 먼저 통일하세요")
+    seen = set()
+    for r in sel:
+        year = _num(r["prd_de"])
+        if not (r[unit_col] or "").strip() or year is None or not year.is_integer():
+            raise SystemExit("단위 식별자 또는 연도가 잘못되었습니다")
+        r[unit_col] = r[unit_col].strip()
+        r["prd_de"] = str(int(year))
+        key = (r[unit_col], r["prd_de"])
+        if key in seen:
+            raise SystemExit("단위×연도 중복입니다 — --filter 로 분류를 하나로 좁히세요")
+        seen.add(key)
     out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", newline="", encoding="utf-8") as f:
         for n in notes:
             f.write(f"# {n}\n")
@@ -1301,10 +1331,13 @@ def _load(args):
         for e in errs:
             print(f"  - {e}")
         raise SystemExit(2)
-    data_path = Path(args.data) if args.data else Path(d.data.get("file") or "")
-    if not data_path or not data_path.exists():
+    filename = args.data or d.data.get("file")
+    if not filename:
+        raise SystemExit("자료 파일을 설계서 data.file 또는 --data 로 지정하세요")
+    data_path = Path(filename)
+    if not data_path.is_file():
         cand = design_path.parent / (d.data.get("file") or "")
-        if cand.exists():
+        if not args.data and cand.is_file():
             data_path = cand
         else:
             raise SystemExit(f"자료 파일이 없음: {data_path} (설계서 data.file 또는 --data)")
